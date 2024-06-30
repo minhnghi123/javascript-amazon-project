@@ -47,3 +47,11 @@ export function addTocart(productId) {
    cart = newCart ; 
    saveToStorage()  ;
   }
+
+export function updateCartQuantity() {
+    let numberofProducts = 0 ;
+    cart.forEach((cartItem)=>{
+        numberofProducts+=cartItem.quantity ;
+    }) ;    
+    return numberofProducts ; 
+}

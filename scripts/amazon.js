@@ -1,11 +1,7 @@
-import {cart, addTocart} from '../data/cart.js' ;  
+import {cart, addTocart,updateCartQuantity} from '../data/cart.js' ;  
 import {products} from '../data/products.js' ;  
 import { formatCurrency } from './utils/money.js';
 let productsHTML = '' ;
-
-
-
-document.querySelector('.cart-quantity').innerHTML = updateCartQuantity() ; 
 
 products.forEach((product)=>{
     productsHTML += 
@@ -64,15 +60,7 @@ products.forEach((product)=>{
 document.querySelector('.js-products-grid')
 .innerHTML = productsHTML ; 
 
- function updateCartQuantity() {
-    let numberofProducts = 0 ;
-    cart.forEach((cartItem)=>{
-        numberofProducts+=cartItem.quantity ;
-    }) ; 
-    document.querySelector('.cart-quantity')
-    .innerHTML = numberofProducts ; 
-    return numberofProducts ;
-}
+ 
 
 function turnOnAdded(productId) {
     //added to cart 
@@ -89,12 +77,19 @@ function turnOnAdded(productId) {
     TimeoutId[productId] = nowId ; 
 }
 
+// update cart quantity on the top-right side 
+loadCartQuantity()  ;
+function loadCartQuantity() {
+    document.querySelector('.cart-quantity')
+            .innerHTML = updateCartQuantity() ; 
+}
+
 document.querySelectorAll('.js-add-to-cart')
 .forEach((buttonElement)=>{
     buttonElement.addEventListener('click',()=>{
        const productId =  buttonElement.dataset.productId; 
        addTocart(productId) ;
-       updateCartQuantity() ; 
+       loadCartQuantity()  ;
        turnOnAdded(productId) ; 
       
     } 
