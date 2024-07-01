@@ -109,28 +109,59 @@ function setHeader() {
 }
 
 // make the delete interactive
-document.querySelectorAll('.js-delete-link')
-.forEach((link)=>{
-    link.addEventListener('click',()=>{
-      const productId  = link.dataset.productId ; 
-      removeFromCart(productId) ; 
-    const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
-    container.remove() ; 
-    setHeader()  ;
-    }) ; 
-}) ; 
+deleteItems(null)  ;
+function deleteItems(productId){
 
-function saveQuantity(productId,container) {
-    document.querySelectorAll('.save-quantity-link')
-    .forEach((link)=>{
-    link.addEventListener('click',()=>{
-        container.classList.remove('is-editing-quantity') ;
-        const changedQuantity = document.querySelector('.quantity-input').value ;
-        document.querySelector('.quantity-label')
-        .innerHTML =  Number(changedQuantity) ;  
-        updateQuantity(productId,changedQuantity) ; 
+    if(productId) {
+        removeFromCart(productId) ; 
+        const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
+        container.remove() ; 
         setHeader()  ;
+    }
+    else {
+    document.querySelectorAll('.js-delete-link')
+    .forEach((link)=>{
+        link.addEventListener('click',()=>{
+        const productId  = link.dataset.productId ; 
+        removeFromCart(productId) ; 
+        const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
+        container.remove() ; 
+        setHeader()  ;
+    }) ; 
+    }) ; 
+    }
+}
+
+
+
+// /make the save interactive
+function saveQuantity(productId,container) {
+    document.querySelectorAll('.quantity-input')
+    .forEach((link)=>{
+    link.addEventListener('keydown',(event)=>{
+        if(event.key ==='Enter') {
+            container.classList.remove('is-editing-quantity') ;
+            const changedQuantity = document.querySelector('.quantity-input').value ;
+            //check the valid quantity
+            if(Number(changedQuantity)>=0 && Number(changedQuantity)<1000){
+                if(!Number(changedQuantity)) {
+                    deleteItems(productId) ; 
+                }
+                else {
+                //update on quantity-label
+                document.querySelector('.quantity-label')
+                .innerHTML =  Number(changedQuantity) ;  
+                updateQuantity(productId,changedQuantity) ; 
+                setHeader()   ; 
+                }
+            }
+            else {
+                alert('Quantity must be at least 0 and less than 1000');
+                return;
+            }
+        }
     });
+    
 });
 }
 
