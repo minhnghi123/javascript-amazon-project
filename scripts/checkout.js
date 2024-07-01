@@ -1,4 +1,4 @@
-import {cart,removeFromCart,updateCartQuantity} from '../data/cart.js' ; 
+import {cart,removeFromCart,updateCartQuantity,updateQuantity} from '../data/cart.js' ; 
 import { products } from '../data/products.js';  
 import { formatCurrency } from './utils/money.js';
 let cartSumaryHTML = '' ;
@@ -30,9 +30,14 @@ cart.forEach((cartItem)=>{
                 <span>
                 Quantity: <span class="quantity-label">${cartItem.quantity}</span>
                 </span>
-                <span class="update-quantity-link link-primary">
+                <span class="update-quantity-link link-primary 
+                js-update-link"
+                data-product-id = "${matchingProduct.id}"
+                >
                 Update
                 </span>
+                <input class="quantity-input">
+                <span class="save-quantity-link link-primary">Save</span>
                 <span class="delete-quantity-link link-primary
                 js-delete-link
                 " data-product-id ="${matchingProduct.id}">
@@ -103,7 +108,7 @@ function setHeader() {
     .innerHTML = `${numberOfProducts_header} ${formatItem}` ; 
 }
 
-
+// make the delete interactive
 document.querySelectorAll('.js-delete-link')
 .forEach((link)=>{
     link.addEventListener('click',()=>{
@@ -114,4 +119,32 @@ document.querySelectorAll('.js-delete-link')
     setHeader()  ;
     }) ; 
 }) ; 
+
+function saveQuantity(productId,container) {
+    document.querySelectorAll('.save-quantity-link')
+    .forEach((link)=>{
+    link.addEventListener('click',()=>{
+        container.classList.remove('is-editing-quantity') ;
+        const changedQuantity = document.querySelector('.quantity-input').value ;
+        document.querySelector('.quantity-label')
+        .innerHTML =  Number(changedQuantity) ;  
+        updateQuantity(productId,changedQuantity) ; 
+        setHeader()  ;
+    });
+});
+}
+
+//make the update interactive 
+document.querySelectorAll('.js-update-link')
+.forEach((link)=>{
+   link.addEventListener('click',()=>{
+    const productId = link.dataset.productId ; 
+    const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
+    container.classList.add('is-editing-quantity') ;
+    //make the save interactive
+    saveQuantity(productId,container) ; 
+   }) ; 
+}) ; 
+
+
 

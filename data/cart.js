@@ -55,3 +55,17 @@ export function updateCartQuantity() {
     }) ;    
     return numberofProducts ; 
 }
+
+export function updateQuantity(productId,newQuantity) {
+  let isMatchingItem ; 
+  //find a matching productId in the cart
+  cart.forEach((cartItem)=>{
+    if(cartItem.productId === productId) 
+      {
+        isMatchingItem = cartItem ;
+      } 
+  }) ; 
+  //update its quantity to the new quantity 
+  isMatchingItem.quantity = Number(newQuantity) ; 
+  saveToStorage()  ;
+}
