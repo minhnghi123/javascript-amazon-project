@@ -132,15 +132,10 @@ function deleteItems(productId){
     }
 }
 
+//processing of saveQuantity function (divided smaller function to be easy organized)
 
-
-// /make the save interactive
-function saveQuantity(productId,container) {
-    document.querySelectorAll('.quantity-input')
-    .forEach((link)=>{
-    link.addEventListener('keydown',(event)=>{
-        if(event.key ==='Enter') {
-            container.classList.remove('is-editing-quantity') ;
+function processingOfsaveQuantity(productId,container) {
+    container.classList.remove('is-editing-quantity') ;
             const changedQuantity = document.querySelector('.quantity-input').value ;
             //check the valid quantity
             if(Number(changedQuantity)>=0 && Number(changedQuantity)<1000){
@@ -159,10 +154,27 @@ function saveQuantity(productId,container) {
                 alert('Quantity must be at least 0 and less than 1000');
                 return;
             }
+}
+
+// /make the save interactive
+function saveQuantity(productId,container) {
+    //add event keydown when you press Enter key
+    document.querySelectorAll('.quantity-input')
+    .forEach((link)=>{
+    link.addEventListener('keydown',(event)=>{
+        if(event.key ==='Enter') {
+            processingOfsaveQuantity(productId,container) ; 
         }
     });
     
-});
+    });
+    //add event click when you wanan click the save
+    document.querySelectorAll('.save-quantity-link')
+    .forEach((link)=>{
+        link.addEventListener('click',()=>{
+            processingOfsaveQuantity(productId,container) ; 
+        }) ; 
+    })
 }
 
 //make the update interactive 
