@@ -5,6 +5,7 @@ import { deliveryOptions } from '../../data/deliveryOptions.js';
 //default export from external library
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js' ; 
 
+
 export function renderOrderSummary() {
     let cartSumaryHTML = '' ;
 
@@ -46,7 +47,7 @@ export function renderOrderSummary() {
                 </div>
                 <div class="product-quantity">
                     <span>
-                    Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+                    Quantity: <span class="quantity-label js-quantity-label-${matchingProduct}">${cartItem.quantity}</span>
                     </span>
                     <span class="update-quantity-link link-primary 
                     js-update-link"
@@ -54,8 +55,8 @@ export function renderOrderSummary() {
                     >
                     Update
                     </span>
-                    <input class="quantity-input">
-                    <span class="save-quantity-link link-primary">Save</span>
+                    <input class="quantity-input js-quantity-input-${matchingProduct.id}">
+                    <span class="save-quantity-link link-primary js-save-quantity-link-${matchingProduct.id}">Save</span>
                     <span class="delete-quantity-link link-primary
                     js-delete-link
                     " data-product-id ="${matchingProduct.id}">
@@ -120,7 +121,6 @@ export function renderOrderSummary() {
     // make the delete interactive
     deleteItems(null)  ;
     function deleteItems(productId){
-
         if(productId) {
             removeFromCart(productId) ; 
             const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
@@ -145,7 +145,7 @@ export function renderOrderSummary() {
 
     function processingOfsaveQuantity(productId,container) {
         container.classList.remove('is-editing-quantity') ;
-                const changedQuantity = document.querySelector('.quantity-input').value ;
+                const changedQuantity = document.querySelector(`.js-quantity-input-${productId}`).value ;
                 //check the valid quantity
                 if(Number(changedQuantity)>=0 && Number(changedQuantity)<1000){
                     if(!Number(changedQuantity)) {
@@ -153,10 +153,9 @@ export function renderOrderSummary() {
                     }
                     else {
                     //update on quantity-label
-                    document.querySelector('.quantity-label')
-                    .innerHTML =  Number(changedQuantity) ;  
                     updateQuantity(productId,changedQuantity) ; 
-                    setHeader()   ; 
+                    //load the pages
+                    renderOrderSummary()  ;
                     }
                 }
                 else {
@@ -168,22 +167,18 @@ export function renderOrderSummary() {
     // /make the save interactive
     function saveQuantity(productId,container) {
         //add event keydown when you press Enter key
-        document.querySelectorAll('.quantity-input')
-        .forEach((link)=>{
-        link.addEventListener('keydown',(event)=>{
+        document.querySelector(`.js-quantity-input-${productId}`).addEventListener('keydown',(event)=>{
             if(event.key ==='Enter') {
                 processingOfsaveQuantity(productId,container) ; 
             }
         });
         
-        });
+       
         //add event click when you wanan click the save
-        document.querySelectorAll('.save-quantity-link')
-        .forEach((link)=>{
-            link.addEventListener('click',()=>{
+        document.querySelector(`.js-save-quantity-link-${productId}`).addEventListener('click',()=>{
                 processingOfsaveQuantity(productId,container) ; 
             }) ; 
-        })
+       
     }
 
     //make the update interactive 
@@ -207,5 +202,8 @@ export function renderOrderSummary() {
         })
     })
 }
+
+
+
 
 
