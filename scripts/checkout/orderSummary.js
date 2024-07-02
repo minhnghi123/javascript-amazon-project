@@ -149,16 +149,18 @@ export function renderOrderSummary() {
                     else {
                     //update on quantity-label
                     updateQuantity(productId,changedQuantity) ; 
-                    //load the pages
-                    renderOrderSummary()  ;
                     }
                 }
                 else {
                     alert('Quantity must be at least 0 and less than 1000');
                     return;
                 }
+                
+                //load the pages
+                renderOrderSummary()  ;
+                //whhen update let update on paymentsummary
+                renderPaymentSummary() ;
     }
-
     // /make the save interactive
     function saveQuantity(productId,container) {
         //add event keydown when you press Enter key
@@ -167,18 +169,11 @@ export function renderOrderSummary() {
                 processingOfsaveQuantity(productId,container) ; 
             }
         });
-        
-       
         //add event click when you wanan click the save
         document.querySelector(`.js-save-quantity-link-${productId}`).addEventListener('click',()=>{
                 processingOfsaveQuantity(productId,container) ; 
             }) ; 
-
-            //whhen update let update on paymentsummary
-            renderPaymentSummary() ;
-       
     }
-
     //make the update interactive 
     document.querySelectorAll('.js-update-link')
     .forEach((link)=>{
@@ -187,7 +182,7 @@ export function renderOrderSummary() {
         const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
         container.classList.add('is-editing-quantity') ;
         //make the save interactive
-        saveQuantity(productId,container) ; 
+        saveQuantity(productId,container) ;  
     }) ; 
     }) ; 
     //make the deliveryOptions interactive
