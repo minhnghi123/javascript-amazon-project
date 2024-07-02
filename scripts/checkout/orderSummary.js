@@ -1,28 +1,20 @@
 import {cart,removeFromCart,updateCartQuantity,updateQuantity,updateDeliveryOption} from '../../data/cart.js' ; 
 import { products,getProduct } from '../../data/products.js';  
 import { formatCurrency } from '../utils/money.js';
-import { deliveryOptions,getDeliveryOption } from '../../data/deliveryOptions.js';
+import { deliveryOptions,getDeliveryOption,calculateDeliveryDate } from '../../data/deliveryOptions.js';
 //default export from external library
-import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js' ; 
 import {renderPaymentSummary } from './paymentSummary.js';
-
+import { renderCheckoutHeader } from './checkoutHeader.js';
 export function renderOrderSummary() {
     let cartSumaryHTML = '' ;
-
     cart.forEach((cartItem)=>{
         const productId = cartItem.productId ; 
         //get full in4 of product
         const matchingProduct =getProduct(productId); 
         //get full in4 of deliveryOption
-
         const deliveryOptionId = cartItem.deliveryOptionId ; 
         const deliveryOption=getDeliveryOption(deliveryOptionId) ;
-        
-        const today = dayjs() ; //->object
-        const deliveryDate = today.add(deliveryOption.deliveryDays,'days') ; //object
-        const dateString = deliveryDate.format('dddd, MMMM, D, YYYY') ; 
-
-
+        const dateString = calculateDeliveryDate(deliveryOption); 
         cartSumaryHTML+=`<div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
             <div class="delivery-date">
                 Delivery date: ${dateString}
@@ -75,9 +67,7 @@ export function renderOrderSummary() {
     function deliveryOptionsHTML(matchingProduct,cartItem) {
         let html = '' ; 
         deliveryOptions.forEach((deliveryOption)=>{
-            const today = dayjs() ; //->object
-            const deliveryDate = today.add(deliveryOption.deliveryDays,'days') ; //object
-            const dateString = deliveryDate.format('dddd, MMMM, D, YYYY') ; 
+            const dateString = calculateDeliveryDate(deliveryOption) ; 
             const priceString= deliveryOption.priceCents=== 0 ? 'FREE': `$${formatCurrency(deliveryOption.priceCents)}-` ;  
             let isCheck = deliveryOption.id === cartItem.deliveryOptionId ; 
             html+=`<div class="delivery-option js-delivery-option" data-product-id ="${matchingProduct.id}" data-delivery-id ="${deliveryOption.id}">
@@ -104,22 +94,14 @@ export function renderOrderSummary() {
     .innerHTML = cartSumaryHTML ; 
 
     // update checkout( numberOfProducts)
-    setHeader() ; 
-    function setHeader() {
-        let numberOfProducts_header = updateCartQuantity();
-        let formatItem = (numberOfProducts_header>1)?'items':'item' ; 
-        document.querySelector('.item-quantity-header')
-        .innerHTML = `${numberOfProducts_header} ${formatItem}` ; 
-    }
+    renderCheckoutHeader() ;
 
     // make the delete interactive
     deleteItems(null)  ;
     function deleteItems(productId){
         if(productId) {
             removeFromCart(productId) ; 
-            const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
-            container.remove() ; 
-            setHeader()  ;
+            renderOrderSummary()  ;
         }
         else {
         document.querySelectorAll('.js-delete-link')
@@ -127,9 +109,7 @@ export function renderOrderSummary() {
             link.addEventListener('click',()=>{
             const productId  = link.dataset.productId ; 
             removeFromCart(productId) ; 
-            const container =  document.querySelector(`.js-cart-item-container-${productId}`) ; 
-            container.remove() ; 
-            setHeader()  ;
+            renderOrderSummary()  ;
             renderPaymentSummary()  ;
         }) ; 
         }) ; 
