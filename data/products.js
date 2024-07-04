@@ -1,3 +1,4 @@
+import formatCurrency from "../scripts/utils/money.js";
 export function getProduct(productId) {
   let matchingProduct ; 
   products.forEach((product)=>{
@@ -5,6 +6,29 @@ export function getProduct(productId) {
   }) ; 
   return matchingProduct ; 
 }
+//using class to coverting all objects into classes ; 
+class Product {
+  id;
+  image;
+  name;
+  rating;
+  priceCents;
+  constructor(productDetails){
+    this.id =productDetails.id ; 
+    this.image=productDetails.image ; 
+    this.name =productDetails.name ;
+    this.rating =productDetails.rating ; 
+    this.priceCents = productDetails.priceCents ;  
+
+  }
+  getStarsUrl() {
+    return `images/ratings/rating-${this.rating.stars*10}.png` ; 
+  }
+  getPrice() {
+    return `$${formatCurrency(this.priceCents)}` ; 
+  }
+}
+
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -664,4 +688,8 @@ export const products = [
       "mens"
     ]
   }
-];
+].map((productDetails)=>{
+  return new Product(productDetails) ; 
+});
+console.log(products) ;
+//using map whhen you wana convert an old array with manny objects in this to a new array with ProductClass and saved it again to the products ; 
