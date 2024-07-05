@@ -50,6 +50,7 @@ class Clothing extends Product {
 // const date =  new Date() ; 
 // console.log(date) ; 
 // console.log(date.toLocaleTimeString()) ; 
+/*
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -715,5 +716,26 @@ export const products = [
   }
   return new Product(productDetails) ; 
 });
-
+*/
 //using map whhen you wana convert an old array with manny objects in this to a new array with ProductClass and saved it again to the products ; 
+
+//now we load products by backend url paths
+
+export function loadProducts(fun) {
+  //set up a request and send it into my backend ; 
+  const xhr = new XMLHttpRequest() ; 
+  xhr.addEventListener('load',()=>{
+   products =  JSON.parse(xhr.response).map((productDetails)=>{
+    if(productDetails.type === 'clothing'){
+      return new Clothing(productDetails) ; 
+    }
+    return new Product(productDetails) ; 
+  }); 
+  console.log('load products') ;  
+  fun() ; // run the function to load products on the page when give the response from the backend web to the webpage
+  }) ;
+  xhr.open('GET','https://supersimplebackend.dev/products') ; 
+  xhr.send() ; //-> asynchronous that means it will send the request but it will not wait for the respond comeback
+} 
+ 
+export let products = [] ; 
