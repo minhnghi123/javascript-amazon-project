@@ -82,3 +82,13 @@ export function updateDeliveryOption(productId, deliveryOptionId) {
     isMatching.deliveryOptionId = deliveryOptionId ; 
     saveToStorage() ; 
 }
+export function loadCart(fun) {
+  //set up a request and send it into my backend ; 
+  const xhr = new XMLHttpRequest() ; 
+  xhr.addEventListener('load',()=>{
+   console.log(xhr.response) ; 
+   fun() ; 
+  }) ;
+  xhr.open('GET','https://supersimplebackend.dev/cart') ; 
+  xhr.send() ; //-> asynchronous that means it will send the request but it will not wait for the respond comeback
+} 
