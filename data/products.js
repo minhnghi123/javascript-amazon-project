@@ -719,8 +719,27 @@ export const products = [
 */
 //using map whhen you wana convert an old array with manny objects in this to a new array with ProductClass and saved it again to the products ; 
 
-//now we load products by backend url paths
+export function loadProductsFetch() {
+ const promise =  fetch('https://supersimplebackend.dev/products').then((response)=>{
+    return response.json()  ; 
+  }).then((productsData)=>{
+    products = productsData.map((productDetails)=>{
+      if(productDetails.type === 'clothing'){
+        return new Clothing(productDetails) ; 
+      }
+      return new Product(productDetails) ; 
+    }); 
+    console.log('load products') ;  
+  }) ; 
+  return promise ; //if this is a promise , we can add more steps like bellow  
+}
 
+// loadProductsFetch().then(()=>{
+//   console.log('next-steps') ; 
+  
+// }) ; 
+
+//now we load products by backend url paths
 export function loadProducts(fun) {
   //set up a request and send it into my backend ; 
   const xhr = new XMLHttpRequest() ; 

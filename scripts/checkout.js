@@ -1,18 +1,15 @@
 import { renderOrderSummary } from "./checkout/orderSummary.js";
 import { renderPaymentSummary } from "./checkout/paymentSummary.js"; 
-import { loadProducts } from "../data/products.js";
+import { loadProducts,loadProductsFetch } from "../data/products.js";
 import { loadCart } from "../data/cart.js";
 // import '../data/backend-practice.js' ; 
 //using backend to callback the function in the future ; 
 //when this send back the respond immediately execute two functions ; 
 
 
+
 Promise.all([
-    new Promise((result)=>{
-        loadProducts(()=>{
-            result('value1') ; 
-        }) ; 
-    }),
+    loadProductsFetch() ,
     new Promise((result)=>{
         loadCart(()=>{
             result() ; 
