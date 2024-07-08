@@ -8,14 +8,17 @@ import { loadCart } from "../data/cart.js";
 
 //async return a promise, actually async is a shortcut of promise ; make aynchronous normal
 async function loadPage() {
-  await loadProductsFetch(); // only use await for the promise and only use inside the async function
-
-  const value = await new Promise((result) => {
-    loadCart(() => {
-      result();
+  try {
+    await loadProductsFetch(); // only use await for the promise and only use inside the async function
+    const value = await new Promise((result) => {
+      loadCart(() => {
+        result();
+      });
     });
-  });
-  console.log(value);
+  } catch (error) {
+    console.log("Unexpected error. Please try again . ");
+  }
+
   renderOrderSummary();
   renderPaymentSummary();
 }

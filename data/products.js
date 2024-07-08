@@ -1,55 +1,54 @@
 import formatCurrency from "../scripts/utils/money.js";
 export function getProduct(productId) {
-  let matchingProduct ; 
-  products.forEach((product)=>{
-      if(product.id === productId) matchingProduct = product ; 
-  }) ; 
-  return matchingProduct ; 
+  let matchingProduct;
+  products.forEach((product) => {
+    if (product.id === productId) matchingProduct = product;
+  });
+  return matchingProduct;
 }
-//using class to coverting all objects into classes ; 
+//using class to coverting all objects into classes ;
 class Product {
   id;
   image;
   name;
   rating;
   priceCents;
-  constructor(productDetails){
-    this.id =productDetails.id ; 
-    this.image=productDetails.image ; 
-    this.name =productDetails.name ;
-    this.rating =productDetails.rating ; 
-    this.priceCents = productDetails.priceCents ;  
-
+  constructor(productDetails) {
+    this.id = productDetails.id;
+    this.image = productDetails.image;
+    this.name = productDetails.name;
+    this.rating = productDetails.rating;
+    this.priceCents = productDetails.priceCents;
   }
   getStarsUrl() {
-    return `images/ratings/rating-${this.rating.stars*10}.png` ; 
+    return `images/ratings/rating-${this.rating.stars * 10}.png`;
   }
   getPrice() {
-    return `$${formatCurrency(this.priceCents)}` ; 
+    return `$${formatCurrency(this.priceCents)}`;
   }
 
   extraInfoHTML() {
-    return '' ; 
+    return "";
   }
 }
 class Clothing extends Product {
-  sizeChartLink ; 
+  sizeChartLink;
   constructor(productDetails) {
-    super(productDetails) ; 
-    this.sizeChartLink = productDetails.sizeChartLink ; 
+    super(productDetails);
+    this.sizeChartLink = productDetails.sizeChartLink;
   }
-  extraInfoHTML(){
-    return `<a href= "${this.sizeChartLink}" target ="_blank">Size chart</a>`
+  extraInfoHTML() {
+    return `<a href= "${this.sizeChartLink}" target ="_blank">Size chart</a>`;
   }
 }
 // function logThis() {
-//   console.log(this)  ; 
+//   console.log(this)  ;
 // }
-// logThis.call('hello') ; 
-//built-in class ; 
-// const date =  new Date() ; 
-// console.log(date) ; 
-// console.log(date.toLocaleTimeString()) ; 
+// logThis.call('hello') ;
+//built-in class ;
+// const date =  new Date() ;
+// console.log(date) ;
+// console.log(date.toLocaleTimeString()) ;
 /*
 export const products = [
   {
@@ -717,44 +716,54 @@ export const products = [
   return new Product(productDetails) ; 
 });
 */
-//using map whhen you wana convert an old array with manny objects in this to a new array with ProductClass and saved it again to the products ; 
+//using map whhen you wana convert an old array with manny objects in this to a new array with ProductClass and saved it again to the products ;
 
 export function loadProductsFetch() {
- const promise =  fetch('https://supersimplebackend.dev/products').then((response)=>{
-    return response.json()  ; 
-  }).then((productsData)=>{
-    products = productsData.map((productDetails)=>{
-      if(productDetails.type === 'clothing'){
-        return new Clothing(productDetails) ; 
-      }
-      return new Product(productDetails) ; 
-    }); 
-    console.log('load products') ;  
-  }) ; 
-  return promise ; //if this is a promise , we can add more steps like bellow  
+  const promise = fetch("https://supersimplebackend.dev/products")
+    .then((response) => {
+      return response.json();
+    })
+    .then((productsData) => {
+      products = productsData.map((productDetails) => {
+        if (productDetails.type === "clothing") {
+          return new Clothing(productDetails);
+        }
+        return new Product(productDetails);
+      });
+      console.log("load products");
+    })
+    .catch(() => {
+      console.log("Unexpected error. Please try again later");
+    });
+  return promise; //if this is a promise , we can add more steps like bellow
 }
 
 // loadProductsFetch().then(()=>{
-//   console.log('next-steps') ; 
-  
-// }) ; 
+//   console.log('next-steps') ;
+
+// }) ;
 
 //now we load products by backend url paths
 export function loadProducts(fun) {
-  //set up a request and send it into my backend ; 
-  const xhr = new XMLHttpRequest() ; 
-  xhr.addEventListener('load',()=>{
-   products =  JSON.parse(xhr.response).map((productDetails)=>{
-    if(productDetails.type === 'clothing'){
-      return new Clothing(productDetails) ; 
-    }
-    return new Product(productDetails) ; 
-  }); 
-  console.log('load products') ;  
-  fun() ; // run the function to load products on the page when give the response from the backend web to the webpage
-  }) ;
-  xhr.open('GET','https://supersimplebackend.dev/products') ; 
-  xhr.send() ; //-> asynchronous that means it will send the request but it will not wait for the respond comeback
-} 
- 
-export let products = [] ; 
+  //set up a request and send it into my backend ;
+  const xhr = new XMLHttpRequest();
+  xhr.addEventListener("load", () => {
+    products = JSON.parse(xhr.response).map((productDetails) => {
+      if (productDetails.type === "clothing") {
+        return new Clothing(productDetails);
+      }
+      return new Product(productDetails);
+    });
+    console.log("load products");
+    fun(); // run the function to load products on the page when give the response from the backend web to the webpage
+  });
+
+  xhr.addEventListener("error", () => {
+    console.log("Unexpected error. Please try again later");
+  });
+
+  xhr.open("GET", "https://supersimplebackend.dev/products");
+  xhr.send(); //-> asynchronous that means it will send the request but it will not wait for the respond comeback
+}
+
+export let products = [];
