@@ -2,7 +2,7 @@ import { getProduct, loadProductsFetch } from "../data/products.js";
 import { orders } from "../data/order.js";
 import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 import formatCurrency from "./utils/money.js";
-import { addTocart, cart } from "../data/cart.js";
+import { addTocart, cart, updateCartQuantity } from "../data/cart.js";
 import { addOrder, removeFromOrders } from "../data/order.js";
 async function loadPage() {
   await loadProductsFetch();
@@ -87,6 +87,7 @@ async function loadPage() {
   }
 
   document.querySelector(".js-orders-grid").innerHTML = ordersHTML;
+  document.querySelector(".cart-quantity").innerHTML = updateCartQuantity();
   document.querySelectorAll(".js-buy-again").forEach((buttonBuyAgain) => {
     buttonBuyAgain.addEventListener("click", () => {
       const productId = buttonBuyAgain.dataset.productId;
