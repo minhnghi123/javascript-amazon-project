@@ -1,7 +1,7 @@
 import { renderOrderSummary } from "./checkout/orderSummary.js";
 import { renderPaymentSummary } from "./checkout/paymentSummary.js";
 import { loadProducts, loadProductsFetch } from "../data/products.js";
-import { loadCart } from "../data/cart.js";
+import { loadCart, loadCartFetch } from "../data/cart.js";
 // import '../data/backend-practice.js' ;
 //using backend to callback the function in the future ;
 //when this send back the respond immediately execute two functions ;
@@ -9,12 +9,14 @@ import { loadCart } from "../data/cart.js";
 //async return a promise, actually async is a shortcut of promise ; make aynchronous normal
 async function loadPage() {
   try {
-    await loadProductsFetch(); // only use await for the promise and only use inside the async function
-    const value = await new Promise((result) => {
-      loadCart(() => {
-        result();
-      });
-    });
+    // await loadProductsFetch(); // only use await for the promise and only use inside the async function
+    // const value = await new Promise((result) => {
+    //   loadCart(() => {
+    //     result();
+    //   });
+    // });
+    // await loadCartFetch();
+    const loadAll = await Promise.all([loadProductsFetch(), loadCartFetch()]);
   } catch (error) {
     console.log("Unexpected error. Please try again . ");
   }

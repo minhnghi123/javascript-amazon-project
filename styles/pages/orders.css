@@ -218,3 +218,17 @@
     padding: 12px;
   }
 }
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  font-size: 14px;
+  width: 100px;
+  height: 50px;
+  margin-left: 700px;
+  border-radius: 10px;
+}
+.delete-button:hover {
+  background-color: black;
+  transition: background-color, 0.15ms;
+}
